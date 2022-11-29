@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+
+
 def evaluate_waterbirds(loader, model, device):
   #if loader.dataset.train:
   #  print('Checking accuracy on validation set')
@@ -32,8 +34,11 @@ def train_waterbirds(model, train_loader, val_loader, optimizer, scheduler, devi
     
     Inputs:
     - model: A PyTorch Module giving the model to train.
+    - train_loader: A PyTorch DataLoader that will yield training data.
+    - val_loader: A PyTorch DataLoader that will yield validation data.
     - optimizer: An Optimizer object we will use to train the model
     - epochs: (Optional) A Python integer giving the number of epochs to train for
+    - device: torch.device("cuda"), torch.device("mps") [for mac] or torch.device("cpu")
     
     Returns: Accuracy.
     """
