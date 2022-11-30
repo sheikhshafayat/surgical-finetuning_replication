@@ -15,11 +15,16 @@ import torchvision.transforms as T
 
 
 
+def build_cifar10(device):
+    print('Building model...')
+    def gn_helper(planes):
+        return nn.GroupNorm(8, planes)
+    net = ResNet(26, 1, channels=3, classes=10, norm_layer=gn_helper).to(device)
+    return net
+
+
 def evaluate_cifar(loader, model, device):
-  if loader.dataset.train:
-    print('Checking accuracy on validation set')
-  else:
-    print('Checking accuracy on test set')   
+    
   num_correct = 0
   num_samples = 0
   dtype = torch.float
@@ -78,8 +83,8 @@ def train_cifar(model, train_loader, val_loader, optimizer, scheduler, device, e
         scheduler.step()
 
 
-        print('Epoch %d, loss = %.4f, lr %.8f' % (e, loss.item(), scheduler.get_lr()[0]))
-        acc = evaluate_cifar(val_loader, model)
+        print('Epoch %d, loss = %.4f, lr %.8f' % (e, loss.item(), scheduler.get_last_lr()[0]))
+        acc = evaluate_cifar(val_loader, model, device)
 
         print()
     return acc #, losses, accuracies 
