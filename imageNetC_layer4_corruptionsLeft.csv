@@ -1,0 +1,11 @@
+,corruption,accuracy,lr,state,n_subset
+0,brightness,0.5355,0.001,fourth layer,2000
+0,contrast,0.1145,0.001,fourth layer,2000
+0,defocus_blur,0.1555,0.001,fourth layer,2000
+0,elastic_transform,0.392,0.001,fourth layer,2000
+0,fog,0.4225,0.001,fourth layer,2000
+0,jpeg_compression,0.2925,0.001,fourth layer,2000
+0,motion_blur,0.2575,0.001,fourth layer,2000
+0,pixelate,0.3365,0.001,fourth layer,2000
+0,shot_noise,0.1435,0.001,fourth layer,2000
+0,zoom_blur,0.3455,0.001,fourth layer,2000
