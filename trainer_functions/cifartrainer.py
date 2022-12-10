@@ -1,6 +1,7 @@
 # part of this code is from https://github.com/zhangmarvin/memo
 
 from models.ResNet import ResNetCifar as ResNet
+from models.ResNetNoise import ResNetNoise as ResNetNoise
 from collections import OrderedDict
 import numpy as np
 import torch
@@ -21,6 +22,14 @@ def build_cifar10(device):
         return nn.GroupNorm(8, planes)
     net = ResNet(26, 1, channels=3, classes=10, norm_layer=gn_helper).to(device)
     return net
+
+def build_cifar10noise(device):
+    print('Building model...')
+    def gn_helper(planes):
+        return nn.GroupNorm(8, planes)
+    net = ResNetNoise(26, 1, channels=3, classes=10, norm_layer=gn_helper).to(device)
+    return net
+
 
 
 def evaluate_cifar(loader, model, device):
