@@ -18,20 +18,26 @@ Among them, **CIFAR-C** and **Waterbirds** datasets can be found [here](https://
 2. In trainer_functions/cifarCloader.py change the data_dir to your folder path (modify the root dir too if needed). 
 3. Run run_cifar.py. 
 4. Inside the file change the optimizer and the dictionary state depending on the layer you are fine-tuning. You can also change n_subset to determine how much data will be used to fine-tune. 
-5. The results are now saved in a .csv file.
+5. The results are now saved in the .csv file.
 
 ### To replicate the results of ImageNet-C:
 1. Download the dataset from the link provided above and put it in a folder.
 2. Change the dataset directory inside ImageNetC_Exp.py and run the file.
 3. Similarly to CIFAR-C, change the optimizer and the dictionary state (for more details, see the final report). 
-4. The results are now saved in a .csv file.
+4. The results are now saved in the .csv file.
 
 ### To replicate the results of Waterbirds
-Very similar to the previous ones: go to run_waterbirds.py and change the csv_dir and root_dir according to your dataset location and then run it. You can change the optimizer and dictionary state. The result would be saved as a csv file. 
+The procedure is very similar to running experiments on the previous datasets.
+1. Download the dataset from the link provided above and put it in a folder.
+2. Change csv_dir and root_dir inside run_waterbirds.py according to your dataset location and run the file.
+3. Similarly to the previous datasets, change the optimizer and the dictionary state (for more details, see the final report). 
+4. The results are now saved in the .csv file.
 
 ### To replicate the results of Living-17 and Entity-30
-
-Run Living17.py and change the dataset directory inside the file. Change the optimizer, dictionary state and save file name accordingly. Entity-30 is also similarr to Living-17, the corresponding file is entity30.py 
+1. Download the ImageNet dataset from the link provided above.
+2. Change the dataset directory according to the first step inside the Living17.py or entity30.py files and run the corresponding file.
+3. Change the optimizer and the dictionary state as in the previous cases.
+4. The results are also saved in the .csv file.
 
 
 
