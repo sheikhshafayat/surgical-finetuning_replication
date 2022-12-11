@@ -46,7 +46,12 @@ def main():
 
             tune_net = build_cifar10(device)
 
-            optimizer = optim.Adam(tune_net.layer3.parameters(), lr=lr, weight_decay=0.0001) # change the optimizer to tune different layers
+            # change the optimizer to tune different layers
+            optimizer = optim.Adam(tune_net.parameters(), lr=lr, weight_decay=0.0001) 
+            #optimizer = optim.Adam(tune_net.layer1.parameters(), lr=lr, weight_decay=0.0001) 
+            #optimizer = optim.Adam(tune_net.layer2.parameters(), lr=lr, weight_decay=0.0001) 
+            #optimizer = optim.Adam(tune_net.layer3.parameters(), lr=lr, weight_decay=0.0001)
+            #optimizer = optim.Adam(tune_net.fc.parameters(), lr=lr, weight_decay=0.0001)  
 
             scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1) # no need to modify this
 
@@ -61,7 +66,7 @@ def main():
             dict['corruption'] = corruption
             dict['accuracy'] = acc
             dict['lr'] = lr
-            dict['state'] = "layer3"
+            dict['state'] = "layer3" # change the name of the layer
             dict['n_subset'] = n_subset
             df_temp = pd.DataFrame(dict, index=[0])
             df = pd.concat([df, df_temp]) 
