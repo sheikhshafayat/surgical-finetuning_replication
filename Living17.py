@@ -12,15 +12,13 @@ def main():
     # directory where ImageNet is stored
     data_dir = '/Users/rada/.mxnet/datasets/imagenet'
     # modified hierarchy of ImageNet is used for creating custom ImageNet datasets
-    info_dir = '/Users/rada/Documents/GitHub/BREEDS-Benchmarks/imagenet_class_hierarchy/modified'
+    info_dir = './modified'
 
     n_subset = 850
     lr = 0.0005
 
-
     # empty dataframe for storing results
     df = pd.DataFrame(columns=['accuracy', "lr", "state", "n_subset"])
-
 
     # making the dataset and dataloaders
     ret = make_living17(info_dir, split="rand")
