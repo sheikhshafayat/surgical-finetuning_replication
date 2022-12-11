@@ -11,11 +11,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as T
 import pandas as pd
 # for plotting
-import matplotlib.pyplot as plt
-%matplotlib inline
-plt.rcParams['figure.figsize'] = (10.0, 8.0) # set default size of plots
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
+
 
 from trainer_functions.cifartrainer import evaluate_cifar, train_cifar, build_cifar10, build_cifar10noise
 from models.ResNet import ResNetCifar as ResNet
@@ -23,25 +19,20 @@ from models.ResNet import ResNetCifar as ResNet
 
 NUM_TRAIN = 45000
 
-# The torchvision.transforms package provides tools for preprocessing data
-# and for performing data augmentation; here we set up a transform to
-# preprocess the data by subtracting the mean RGB value and dividing by the
-# standard deviation of each RGB value; we've hardcoded the mean and std.
+
 transform = T.Compose([
                 T.ToTensor(),
                 T.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
             ])
 
-# We set up a Dataset object for each split (train / val / test); Datasets load
-# training examples one at a time, so we wrap each Dataset in a DataLoader which
-# iterates through the Dataset and forms minibatches. We divide the CIFAR-10
-# training set into train and val sets by passing a Sampler object to the
-# DataLoader telling how it should sample from the underlying Dataset.
+# We download CIFAR-C dataset
 cifar10_train = dset.CIFAR10('./datasets', train=True, download=True,
                              transform=transform)
 loader_train = DataLoader(cifar10_train, batch_size=64, 
                           sampler=sampler.SubsetRandomSampler(range(NUM_TRAIN)))
+# We don't use the training dataset
 
+# 3000 validation images will be used for fine tuning and 2000 for validation
 cifar10_val = dset.CIFAR10('./datasets', train=True, download=True,
                            transform=transform)
 loader_val = DataLoader(cifar10_val, batch_size=64, 
@@ -49,18 +40,21 @@ loader_val = DataLoader(cifar10_val, batch_size=64,
 loader_val_val = DataLoader(cifar10_val, batch_size=64, 
                         sampler=sampler.SubsetRandomSampler(range(48000, 50000)))
 
+# test set
 cifar10_test = dset.CIFAR10('./datasets', train=False, download=True, 
                             transform=transform)
 loader_test = DataLoader(cifar10_test, batch_size=64)
 
-
 lr = 1e-3
-device = torch.device('cpu')
+device = torch.device('cpu') # you can use 'cuda' if you have GPU
 tune_net = build_cifar10noise(device)
-checkpoint = torch.load('checkpoints/ckpt.pth', map_location=device)
+checkpoint = torch.load('checkpoints/ckpt.pth', map_location=device) # preload checkpoints from MEMO paper
 
 
-for i in range(4):
+# The following script is only for one kind of input noise. 
+# To change the noise input, go to models/ResNetNoise.py and change in the forward function
+
+for i in range(5):
     
     tune_net.load_state_dict(checkpoint['net'])
     
@@ -70,7 +64,7 @@ for i in range(4):
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
     acc = train_cifar(tune_net, loader_val, loader_val_val, optimizer, scheduler, device=device, epochs=15)
 
-    print("##########")
+
     print("##########")
     print("Validation Accuracy: ", acc)
     test_acc = evaluate_cifar(loader_test, tune_net, device)
@@ -83,7 +77,7 @@ for i in range(4):
     dict['test_accuracy'] = test_acc
     dict['lr'] = lr
     dict['state'] = "all"
-    dict['noise'] = "fc"
+    dict['noise'] = "layer3"
     df_temp = pd.DataFrame(dict, index=[0])
     df = pd.concat([df, df_temp])
     names = ["all", "layer1", "layer2", "layer3", "fc"]
