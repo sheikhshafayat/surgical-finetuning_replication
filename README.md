@@ -39,7 +39,11 @@ The procedure is very similar to running experiments on the previous datasets.
 3. Change the optimizer and the dictionary state as in the previous cases.
 4. The results are also saved in the .csv file.
 
+We generated graphs using R. The code for generating graphs can be found Graph Plotting folder. 
 
+You can also run cifarnoise.py with to replicate our experiments on synthetic distribution shift. In that case you also need to modify the forward method in models/ResNetNoise.py to change at which level noise is being injected.
+
+The experiments regarding cifarnoise are not included in the final report, however, due to lack of space. 
 
 
 
