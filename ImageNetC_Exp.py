@@ -1,42 +1,28 @@
-from collections import OrderedDict
-import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader, Dataset
-from torch.utils.data import sampler
-import os
-import torchvision.datasets as dset
+from torch.utils.data import DataLoader
 import torchvision.transforms as T
 import pandas as pd
-# for plotting
-import matplotlib.pyplot as plt
-%matplotlib inline
-plt.rcParams['figure.figsize'] = (10.0, 8.0) # set default size of plots
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
 
 from trainer_functions.imagenetc import ImageNetC
-from trainer_functions.imagenetctrainer import build_resnet50, evaluate_imagenetc, train_imagenetc
-
-
+from trainer_functions.imagenetctrainer import build_resnet50, train_imagenetc
 
 def main():
+    # corruptions used to establish the best learning rate
+    # corruption_list = ["frost", "gaussian_noise", "glass_blur", "impulse_noise", "snow"]
+    # lrs = [1e-3, 1e-4, 1e-5]
 
+    # all other corruptions; we run experiments with the best learning rate
     corruption_list = ["brightness", "contrast", "defocus_blur", "elastic_transform", "fog", "jpeg_compression", "motion_blur", "pixelate", "shot_noise",  "zoom_blur"]
+    lrs = [1e-3]
 
-    n_subset = 2000 # change how big should be the fine tune dataset. Try 1000, 2000, or 3000
-    # lrs = [1e-3, 1e-4, 1e-5] # You can try different learning rates
-    lrs = [1e-3] # However, the baseline uses only one
-
+    n_subset = 2000 # number of images to fine-tune on: try 1000, 2000, or 3000
 
     df = pd.DataFrame(columns=['corruption', 'accuracy', "lr", "state", "n_subset"])
 
     for corruption in corruption_list:
         
-        # Put the root of ImageNetC dataset here
-
+        # put the root of ImageNet-C dataset here
         dataset = ImageNetC(root='/Users/rada/Desktop/KAIST/Deep Learning/Datasets/ImageNetC',
                             corruption=corruption, severity=5,
                             transform=T.Compose([T.ToTensor()])
@@ -54,7 +40,7 @@ def main():
             ictestload = DataLoader(ictest, batch_size=64, shuffle=True)
 
             
-            device = torch.device("cuda:0") # all experiments were done on a Mac, setting it to "mps"
+            device = torch.device("mps") # all experiments were done on a Mac, setting it to "mps"
             tune_net = build_resnet50(device) # build a ResNet-50 model default pretrained on ImageNet
 
             # Choose which layer to tune. Total 6 options
@@ -80,15 +66,8 @@ def main():
             df_temp = pd.DataFrame(dict, index=[0])
             df = pd.concat([df, df_temp])
 
-    # change when run
-    file_name = "ImageNetC" + dict['state'] + ".csv"
+    file_name = "ImageNetC_" + dict['state'] + ".csv"
     df.to_csv(file_name)
-
-
-
-
-
-
 
 if __name__ == "__main__":
     main()
